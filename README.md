@@ -1,120 +1,152 @@
-# Azure-Based Deployment of a RAG Chatbot Using Terraform
+# Azure Infrastructure Deployment for RAG Chatbot using Terraform
 
-## Prerequisites
 
-Before starting the deployment process, ensure the following requirements are available:
+## 📋 Prerequisites
 
-* An active Microsoft Azure subscription
-* Terraform installed and configured locally
-* Azure CLI installed and authenticated with your Azure account
+  
 
----
+- Azure Subscription
 
-## Project Features
+- Terraform installed
 
-This solution provides:
+- Azure CLI authenticated to your account
 
-* PDF document upload and intelligent document querying
-* Secure and scalable cloud infrastructure hosted on Azure
-* Automated infrastructure provisioning using Terraform
-* Complete deployment workflow for an AI-powered chatbot platform
+  
 
----
+----------
 
-## Project Description
+  
 
-This project demonstrates the deployment of a **Retrieval-Augmented Generation (RAG) Chatbot** on **Microsoft Azure** through **Terraform Infrastructure as Code (IaC)**. The platform combines modern AI technologies with cloud-native infrastructure to deliver a document-aware conversational experience.
+## ✨ Key Features
 
-### Technology Stack
+  
 
-The application consists of the following components:
+- Upload PDFs and ask document-specific questions
 
-* **Streamlit** – User-facing web interface
-* **FastAPI** – Backend API and application logic
-* **ChromaDB** – Vector database for semantic document retrieval
-* **PostgreSQL** – Persistent relational database
+- Scalable and secure deployment on Azure
 
-The chatbot enables users to upload PDF files and ask questions directly related to the uploaded content. Retrieved document context is incorporated into the response generation process, allowing more accurate and relevant answers.
+- Modularized Terraform setup
 
----
+- End-to-end project showcasing cloud deployment of AI applications
 
-## Application Architecture
+  
 
-The system follows a multi-layer architecture designed around Retrieval-Augmented Generation principles.
+----------
+  
 
-### Workflow
+## 📖 Project Overview
 
-1. Users interact with the chatbot through the Streamlit interface.
-2. PDF documents can be uploaded and processed.
-3. Document content is converted into embeddings and stored in ChromaDB.
-4. Relevant document segments are retrieved whenever a user submits a query.
-5. FastAPI processes requests and coordinates communication between services.
-6. PostgreSQL stores application-related data and metadata.
-7. Responses are generated using the retrieved document context.
+  
 
-### Core Components
+This project deploys a **Retrieval-Augmented Generation (RAG) Chatbot** application on **Microsoft Azure** using **Terraform** for Infrastructure as Code (IaC).
 
-* **Presentation Layer:** Streamlit
-* **Application Layer:** FastAPI
-* **Vector Storage Layer:** ChromaDB
-* **Data Storage Layer:** PostgreSQL
+  
 
-> **Note:** The primary objective of this project is to demonstrate cloud deployment and infrastructure automation. Advanced AI model internals are outside the main scope of this implementation.
+The chatbot uses:
 
----
+  
 
-## Azure Infrastructure Design
+-  **Streamlit** for the user interface
 
-The deployment architecture includes several Azure services that work together to provide security, scalability, and availability.
+-  **FastAPI** for handling backend logic
 
-### Infrastructure Components
+-  **ChromaDB** (Vector Store) for retrieving relevant information from user-uploaded PDFs
 
-#### Virtual Network (VNet)
+-  **PostgreSQL** for structured data storage
 
-Provides network isolation and contains multiple dedicated subnets for different workloads.
+  
 
-#### Application Gateway
+It enables users to chat normally **and** upload PDFs to ask questions specifically about the content of the uploaded documents, making the chatbot highly **context-aware** and **document-focused**.
 
-Acts as the entry point for incoming traffic and distributes requests across application instances.
+  
 
-#### Azure Bastion
+## 💬 Application Architecture
 
-Offers secure administrative access to virtual machines without exposing SSH ports publicly.
+  
 
-#### Virtual Machine Scale Sets (VMSS)
+A RAG (Retrieval-Augmented Generation) chatbot using **Streamlit** and **FastAPI**.
 
-Hosts the frontend and backend application services while enabling horizontal scaling.
+  
 
-#### ChromaDB Virtual Machine
+- At this stage, users can **upload PDF files** and **chat** normally.
 
-Dedicated VM responsible for running the vector database service.
+- The system uses a **vector store (Chroma)** to retrieve the most relevant context from the PDFs.
 
-#### Azure Database for PostgreSQL
+- This allows the chatbot to **answer questions based on the document content**, not just the general conversation.
 
-Managed database service used for structured data persistence.
+- It seamlessly integrates:
 
-#### Azure Key Vault
+-  **Streamlit** for front-end interaction
 
-Securely stores secrets, credentials, API keys, and database connection information.
+-  **FastAPI** for backend processing
 
-#### Network Security Groups (NSGs)
+-  **PostgreSQL** for database storage
 
-Control inbound and outbound traffic between infrastructure components.
+  
 
----
+> ⚡ Note: While some LLM-related concepts (like vector search) are involved, the focus is to get the system running. Understanding every detail is optional.
 
-## Deployment Process
+  
 
-### Step 1 – Clone the Repository
+### 📈 Application Data Flow Diagram
 
-```bash
-git clone https://github.com/your-username/your-repository.git
+  
+
+Here’s how the components interact:
+
+![Application Architecture](./imgs/application-diagram.png)
+
+## 🏗️ Cloud Infrastructure Architecture
+
+  
+
+To deploy the app in Azure, the architecture includes:
+
+  
+
+-  **Azure Virtual Network (VNet)** with multiple **subnets**.
+
+-  **Application Gateway** to load balance and route user traffic.
+
+-  **Azure Bastion** for secure management of VMs.
+
+-  **VM Scale Sets** hosting Streamlit and FastAPI app.
+
+-  **VM** hosting ChromaDB.
+
+-  **PostgreSQL Database** service.
+
+-  **Key Vault** for managing secrets (database passwords, API keys, etc.).
+
+-  **Network Security Groups (NSGs)** for traffic filtering.
+
+  
+
+### 🖼️ Infrastructure Architecture Diagram
+
+  
+
+Here's the overall Azure infrastructure:
+
+![Azure Infrastructure Diagram](./imgs/azure-architecture-diagram.png)
+
+  
+
+## 🚀 Deployment Steps
+
+  
+
+1. Clone this repository:
+
+```
+git clone https://github.com/your-username/your-repo-name.git
+
 cd Chatbot-Project-Terraform
 ```
 
-### Step 2 – Create SSH Keys for Virtual Machines
+2. Generate ssh keys for VM:
 
-```bash
+```
 mkdir -p ssh-keys
 
 ssh-keygen -t rsa -b 4096 -f ssh-keys/terraform-azure -N ""
@@ -122,116 +154,318 @@ ssh-keygen -t rsa -b 4096 -f ssh-keys/terraform-azure -N ""
 chmod 400 ssh-keys/terraform-azure
 ```
 
-### Step 3 – Create SSH Keys for VM Scale Sets
+3. Generate ssh keys for VMSS:
 
-```bash
+```
 ssh-keygen -t rsa -b 4096 -f ssh-keys/terraform-azure-vmss -N ""
 
-chmod 400 ssh-keys/terraform-azure-vmss
+chmod 400 ssh-keys/terraform-azure
 ```
 
-### Step 4 – Configure Terraform Variables
+4. Edit terraform.tfvars file:
 
-Update the `terraform.tfvars` file with your Azure and application-specific values:
-
-```hcl
-subscription_id = "<AZURE_SUBSCRIPTION_ID>"
-
-source_image_id = "<VMSS_IMAGE_ID>"
-
-openai_key = "<OPENAI_API_KEY>"
 ```
+subscription_id = "<YOUR_SUBSCRIPTION_ID>" #use your subsctiption Id
 
----
+source_image_id = "<YOUR_IMAGE_ID>" # use your image for the VMSS
 
-## Infrastructure Provisioning
+openai_key = "<YOUR_OPENAI_KEY>" # OpenAI_Key
+```
+> ⚡ Note: You can edit any variables name with name you likes.
+5. Creating image:
+First, create a VM and ssh to it. Then, create a file name `setup.sh` and copy and paste the script below. After that, run the scripts.
+The scripts take 3 arguments:
 
-Initialize Terraform:
-
+	1.  **PAT_token**: Your GitHub personal access token.
+	2.  **repo_url**: The URL of your GitHub repository  **(without `https://`)**.
+	3.  **branch_name**: The branch name to use on the VM.
 ```bash
+#!/bin/bash
+
+# Check if the correct number of arguments is provided
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <PAT_token> <repo_url> <branch_name>"
+    exit 1
+fi
+
+# Assign arguments to variables
+PAT_TOKEN="$1"
+REPO_URL="$2"
+BRANCH_NAME="$3"
+REPO_NAME=$(basename "$REPO_URL" .git)
+USER=$(whoami)
+HOME_DIR=$(eval echo ~$USER)
+
+# Set up Conda environment
+echo "Setting up conda environment..."
+source "$HOME_DIR/miniconda3/etc/profile.d/conda.sh"
+if ! conda env list | grep -q "^project "; then
+    conda create -y -n project python=3.11
+fi
+
+# Clone the repository
+echo "Cloning repository..."
+cd "$HOME_DIR"
+if [ -d "$REPO_NAME" ]; then
+    echo "Directory $REPO_NAME already exists. Please remove it or choose a different repository."
+    exit 1
+fi
+export GITHUB_TOKEN="$PAT_TOKEN"
+git clone -b "$BRANCH_NAME" "https://${GITHUB_TOKEN}@${REPO_URL}"
+if [ $? -ne 0 ]; then
+    echo "Failed to clone repository"
+    exit 1
+fi
+cd "$REPO_NAME"
+
+# Install requirements
+echo "Installing requirements..."
+if [ -f requirements.txt ]; then
+    "$HOME_DIR/miniconda3/envs/project/bin/pip" install -r requirements.txt
+else
+    echo "No requirements.txt found"
+fi
+
+# Step 5: Create .env file in the repository directory
+echo "Creating .env file..."
+cat <<EOF | sudo tee $HOME_DIR/$REPO_NAME/.env
+KEY_VAULT_NAME=<YOUR_KEY_VAULT_NAME>
+EOF
+
+# Create systemd services
+echo "Creating systemd services..."
+
+cat <<EOF | sudo tee /etc/systemd/system/backend.service
+[Unit]
+Description=backend
+After=network.target
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$HOME_DIR/$REPO_NAME
+ExecStart=$HOME_DIR/miniconda3/envs/project/bin/uvicorn backend:app --reload --port 5000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat <<EOF | sudo tee /etc/systemd/system/frontend.service
+[Unit]
+Description=Streamlit
+After=network.target
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$HOME_DIR/$REPO_NAME
+ExecStart=$HOME_DIR/miniconda3/envs/project/bin/streamlit run chatbot.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload systemd and start services
+echo "Reloading systemd and starting services..."
+sudo systemctl daemon-reload
+for service in backend frontend; do
+    sudo systemctl enable $service
+    sudo systemctl start $service
+done
+
+echo "Setup completed successfully"
+```
+	After the script is done, run this command:
+	```
+	sudo waagent -deprovision+user
+	```
+Then, Stop the VM and capture the image to create an image.
+
+6. Initialize Terraform:
+
+```
 terraform init
 ```
 
-Review the deployment plan:
+7. Plan Terraform:
 
-```bash
+```
 terraform plan
 ```
 
-Deploy the infrastructure:
+8. Apply Terraform:
 
-```bash
+```
 terraform apply --auto-approve
 ```
 
-> The `--auto-approve` flag is optional and can be removed if manual confirmation is preferred.
+> ⚡ Note: --auto-approve is optional.
 
----
 
-## ChromaDB Deployment
+9. SSH to the Chroma VM using remote explorer with this configuration on it:
 
-After infrastructure creation:
+```
+Host chromaVm # Name of the host, whatever name you like
 
-1. Connect to the ChromaDB virtual machine.
-2. Clone the application repository.
-3. Install dependencies.
-4. Configure database connectivity.
-5. Start the ChromaDB service.
-6. Verify the service is running successfully.
+HostName <PUBLIC_IP_ADDRESS_OF_THE_VM>
 
-Service status can be checked using:
+IdentityFile <PATH_TO_THE_PRIVATE_KEY>
+
+User azureuser # the default is azureuser but change accordingly
+```
+10. After connecting to the VM, create a file name `setup.sh` and paste this script
+ 
+	This script needs you to provide 7 arguments to the bash script:  
+
+	1.  **PAT_token**: Your GitHub personal access token.
+	2.  **repo_url**: The URL of your GitHub repository  **(without `https://`)**.
+	3.  **branch_name**: The branch name to use on the VM.
+	4.  **db_host**: The database host (e.g.,  `[dbteststage6.postgres.database.azure.com](http://dbteststage6.postgres.database.azure.com/)`).
+	5.  **target_db**: The name of the database that was created.
+	6.  **db_username**: The username for the database server.
+	7.  **db_password**: The password for the database server.
+
+To run the setup script:  
+`bash setup.sh <PAT_token> <repo_url> <branch_name> <db_host> <target_db> <db_username> <db_password>` 
+ 
+ ```bash 
+#!/bin/bash
+
+# Check if the correct number of arguments is provided
+if [ $# -ne 7 ]; then
+    echo "Usage: $0 <PAT_token> <repo_url> <branch_name> <db_host> <target_db> <db_username> <db_password>"
+    exit 1
+fi
+
+# Assign arguments to variables
+PAT_TOKEN="$1"
+REPO_URL="$2"
+BRANCH_NAME="$3"
+DB_HOST="$4"
+TARGET_DB="$5"
+DB_USERNAME="$6"
+DB_PASSWORD="$7"
+REPO_NAME=$(basename "$REPO_URL" .git)
+USER=$(whoami)
+HOME_DIR=$(eval echo ~$USER)
+
+# Set up PostgreSQL database
+echo "Setting up database..."
+
+# Step 2: Create the 'advanced_chats' table in the 'TARGET_DB' database
+echo "Creating the 'advanced_chats' table in the $TARGET_DB database..."
+psql "host=$DB_HOST port=5432 dbname=$TARGET_DB user=$DB_USERNAME password=$DB_PASSWORD sslmode=require" \
+    -c "CREATE TABLE IF NOT EXISTS advanced_chats (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        file_path TEXT NOT NULL,
+        last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        pdf_path TEXT,
+        pdf_name TEXT,
+        pdf_uuid TEXT
+    );"
+
+echo "Database and table setup completed successfully."
+
+# Set up Conda environment
+echo "Setting up conda environment..."
+source "$HOME_DIR/miniconda3/etc/profile.d/conda.sh"
+if ! conda env list | grep -q "^project "; then
+    conda create -y -n project python=3.11
+fi
+
+# Clone the repository
+echo "Cloning repository..."
+cd "$HOME_DIR"
+if [ -d "$REPO_NAME" ]; then
+    echo "Directory $REPO_NAME already exists. Please remove it or choose a different repository."
+    exit 1
+fi
+export GITHUB_TOKEN="$PAT_TOKEN"
+git clone -b "$BRANCH_NAME" "https://${GITHUB_TOKEN}@${REPO_URL}"
+if [ $? -ne 0 ]; then
+    echo "Failed to clone repository"
+    exit 1
+fi
+cd "$REPO_NAME"
+
+# Install requirements
+echo "Installing requirements..."
+if [ -f requirements.txt ]; then
+    "$HOME_DIR/miniconda3/envs/project/bin/pip" install -r requirements.txt
+else
+    echo "No requirements.txt found"
+fi
+
+# Create systemd services
+echo "Creating systemd services..."
+cat <<EOF | sudo tee /etc/systemd/system/chromadb.service
+[Unit]
+Description=ChromaDB
+After=network.target
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$HOME_DIR/$REPO_NAME
+ExecStart=$HOME_DIR/miniconda3/envs/project/bin/chroma run --host 0.0.0.0 --path $HOME_DIR/$REPO_NAME/chroma_db
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload systemd and start services
+echo "Reloading systemd and starting services..."
+sudo systemctl daemon-reload
+sudo systemctl enable chromadb
+sudo systemctl start chromadb
+
+echo "Setup completed successfully" 
+  ``` 
+
+11. Check if the chromadb service is running in host `0.0.0.0:8000` :
 
 ```bash
 sudo systemctl status chromadb.service
 ```
 
----
+12. Connect to the instances in the VMSS using bastions:
 
-## VM Scale Set Configuration
+	
 
-Access VMSS instances through Azure Bastion:
+ - From the portal click on the VMSS and then select instances.
 
-1. Open the Azure Portal.
-2. Navigate to the VM Scale Set.
-3. Select an instance.
-4. Choose **Connect via Bastion**.
-5. Authenticate using the configured SSH credentials.
-6. Verify that application services are operational.
 
-Backend service status:
 
+ - Select the first instances and then click on connect via bastion.
+
+	
+
+ - From drop down list select using private key
+
+	
+
+ - provide the username and password
+
+	
+
+ - click connect
+
+13. Verify if the frontend and backend services are running:
 ```bash
 sudo systemctl status backend.service
 ```
-
-Frontend service status:
-
 ```bash
 sudo systemctl status frontend.service
 ```
-
-Restart services if required:
-
+If they are not working restart the backend service using:
 ```bash
 sudo systemctl restart backend.service
-
+```
+```bash
 sudo systemctl restart frontend.service
 ```
-
----
-
-## Validation
-
-After deployment is complete:
-
-* Verify Terraform resources were created successfully.
-* Confirm ChromaDB is operational.
-* Ensure frontend and backend services are running.
-* Test database connectivity.
-* Access the application through the public IP address associated with the Azure Application Gateway.
-
----
-
-## Conclusion
-
-This project showcases how Terraform can be used to automate the deployment of a complete RAG-based chatbot environment on Microsoft Azure. By combining scalable cloud infrastructure with document-aware AI capabilities, the solution demonstrates a practical implementation of Infrastructure as Code for modern AI applications.
+15. Use the public IP address of the application gateway to use the application
