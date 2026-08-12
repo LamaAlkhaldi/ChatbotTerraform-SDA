@@ -64,8 +64,6 @@ The provisioned Azure environment includes:
 
 ### 🖼️ Infrastructure Architecture Diagram
 
-![Azure Infrastructure Diagram](./imgs/azure-architecture-diagram.png)
-
 ----------
 
 ## 🚀 Deployment Steps
