@@ -46,9 +46,6 @@ An integrated RAG ecosystem powered by **Streamlit** and **FastAPI**.
 
 > ⚡ Note: While vector embeddings are utilized, the focus of this repository is streamlined cloud deployment.
 
-### 📈 Application Data Flow Diagram
-
-![Application Architecture](./imgs/application-diagram.png)
 
 ----------
 
